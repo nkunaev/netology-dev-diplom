@@ -58,6 +58,11 @@ variable "pub_key" {
   default = ""
 }
 
+variable "labels" {
+  type    = map(string)
+  default = {}
+}
+
 variable "subnet" {
   default = null
 }

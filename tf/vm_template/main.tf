@@ -5,6 +5,7 @@ resource "yandex_compute_instance" "vm_template" {
   platform_id = var.vm_maintenance_class
   hostname    = var.vm_name
   description = var.description
+  labels = var.labels
 
   resources {
     cores         = var.cpu
@@ -25,11 +26,12 @@ resource "yandex_compute_instance" "vm_template" {
 
   network_interface {
     subnet_id          = var.subnet
-    security_group_ids = [var.security_group]
+    #security_group_ids = [var.security_group]
     nat                = var.nat
   }
 
   metadata = {
     ssh-keys = "${var.username}:${file("${var.pub_key}")}"
+    userdata = file("${path.module}/cloud_config.yaml")
   }
 }

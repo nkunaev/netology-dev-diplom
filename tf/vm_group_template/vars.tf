@@ -13,6 +13,11 @@ variable "folder_id" {
   default = ""
 }
 
+variable "labels" {
+  type    = map(string)
+  default = {}
+}
+
 variable "network_id" {
   type    = string
   default = ""
@@ -79,6 +84,7 @@ variable "scale_size" {
 }
 
 variable "subnets" {
+  type = list
   default = null
 }
 

@@ -3,11 +3,12 @@ resource "yandex_compute_instance_group" "vm_group_template" {
   name               = var.vm_name
   folder_id          = var.folder_id
   service_account_id = var.service_account_id
+  labels = var.labels
 
   instance_template {
 
-    hostname    = var.vm_name
-    description = var.description
+    labels = var.labels
+    description = var.vm_name
 
     resources {
       cores         = var.cpu
@@ -20,12 +21,13 @@ resource "yandex_compute_instance_group" "vm_group_template" {
       initialize_params {
         image_id = data.yandex_compute_image.os.id
         size     = var.disk_size
+        type     = "network-ssd"
       }
     }
 
     network_interface {
       network_id         = var.network_id
-      security_group_ids = [var.security_group]
+      #security_group_ids = [var.security_group]
       subnet_ids         = var.subnets
       nat                = var.nat
     }
