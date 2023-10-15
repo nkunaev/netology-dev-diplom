@@ -3,11 +3,11 @@ resource "yandex_compute_instance_group" "vm_group_template" {
   name               = var.vm_name
   folder_id          = var.folder_id
   service_account_id = var.service_account_id
-  labels = var.labels
+  labels             = var.labels
 
   instance_template {
 
-    labels = var.labels
+    labels      = var.labels
     description = var.vm_name
 
     resources {
@@ -26,10 +26,10 @@ resource "yandex_compute_instance_group" "vm_group_template" {
     }
 
     network_interface {
-      network_id         = var.network_id
-      #security_group_ids = [var.security_group]
-      subnet_ids         = var.subnets
-      nat                = var.nat
+      network_id = var.network_id
+      security_group_ids = var.security_group
+      subnet_ids = var.subnets
+      nat        = var.nat
     }
     network_settings {
       type = "STANDARD"

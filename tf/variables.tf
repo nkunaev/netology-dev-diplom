@@ -15,17 +15,17 @@ variable "folder_id" {
 }
 
 variable "default_zone" {
-  type = string
+  type    = string
   default = "ru-central1-a"
 }
 
 
 variable "vm_username" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "ssh_path" {
-  type = string
+  type    = string
   default = "~/.ssh/id_rsa.pub"
 }

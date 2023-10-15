@@ -34,8 +34,8 @@ variable "description" {
 }
 
 variable "security_group" {
-  type    = string
-  default = ""
+  type    = list(string)
+  default = []
 }
 
 variable "cpu" {
@@ -84,7 +84,7 @@ variable "scale_size" {
 }
 
 variable "subnets" {
-  type = list
+  type    = list(any)
   default = null
 }
 

@@ -1,0 +1,8 @@
+all:
+  hosts:
+    gitlab:
+      ansible_host: ${ gitlab_data.nat_ip_address }
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: "~/.ssh/settings"
+    ansible_become_method: sudo

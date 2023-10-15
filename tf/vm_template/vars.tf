@@ -14,8 +14,8 @@ variable "description" {
 }
 
 variable "security_group" {
-  type    = string
-  default = ""
+  type    = list(string)
+  default = []
 }
 
 variable "cpu" {

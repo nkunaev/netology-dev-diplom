@@ -5,7 +5,7 @@ resource "yandex_compute_instance" "vm_template" {
   platform_id = var.vm_maintenance_class
   hostname    = var.vm_name
   description = var.description
-  labels = var.labels
+  labels      = var.labels
 
   resources {
     cores         = var.cpu
@@ -25,9 +25,9 @@ resource "yandex_compute_instance" "vm_template" {
   }
 
   network_interface {
-    subnet_id          = var.subnet
-    #security_group_ids = [var.security_group]
-    nat                = var.nat
+    subnet_id = var.subnet
+    security_group_ids = var.security_group
+    nat = var.nat
   }
 
   metadata = {
