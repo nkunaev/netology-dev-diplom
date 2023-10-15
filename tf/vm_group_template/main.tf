@@ -36,6 +36,7 @@ resource "yandex_compute_instance_group" "vm_group_template" {
     }
     metadata = {
       ssh-keys = "${var.username}:${file("${var.pub_key}")}"
+      userdata = file("${path.module}/cloud_config.yaml")
     }
 
     scheduling_policy {
