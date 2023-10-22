@@ -1,9 +1,9 @@
-resource "yandex_lb_target_group" "control-plane" {
+resource "yandex_lb_target_group" "woker_nodes" {
   name      = "k8s-control-plane"
   region_id = "ru-central1"
 
   dynamic "target" {
-    for_each = [for nodes in data.yandex_compute_instance_group.k8s-master.instances : {
+    for_each = [for nodes in data.yandex_compute_instance_group.k8s-worker.instances : {
       address = nodes.network_interface.0.ip_address
       subnet_id = nodes.network_interface.0.subnet_id
     }]
@@ -14,28 +14,28 @@ resource "yandex_lb_target_group" "control-plane" {
     }
   }
 
-  depends_on = [ data.yandex_compute_instance_group.k8s-master ]
+  depends_on = [ data.yandex_compute_instance_group.k8s-worker ]
 }
 
 resource "yandex_lb_network_load_balancer" "k8s-lb" {
   name = "network-load-balancer"
-  depends_on = [ yandex_lb_target_group.control-plane ]
+  depends_on = [ yandex_lb_target_group.woker_nodes ]
 
   listener {
     name = "listener"
-    port = 6443
+    port = 80
     external_address_spec {
       ip_version = "ipv4"
     }
   }
 
   attached_target_group {
-    target_group_id = "${ yandex_lb_target_group.control-plane.id }"
+    target_group_id = "${ yandex_lb_target_group.woker_nodes.id }"
 
     healthcheck {
       name = "http"
       http_options {
-        port = 6443
+        port = 80
         path = "/"
       }
     }

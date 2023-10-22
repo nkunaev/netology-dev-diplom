@@ -1,20 +1,14 @@
 all:
   hosts:
     master-0:
-      ansbile_host: 158.160.42.190
-      ip: 192.168.20.4
-    master-1:
-      ansbile_host: 158.160.82.162
-      ip: 192.168.21.4
-    master-2:
-      ansbile_host: 51.250.35.54
-      ip: 192.168.22.11
+      ansbile_host: 192.168.21.6
+      ip: 192.168.21.6
     worker-0:
-      ansbile_host: 
-      ip: 192.168.21.30
-    worker-1:  
-      ansbile_host: 
-      ip: 192.168.22.27
+      ansbile_host: 192.168.21.20
+      ip: 192.168.21.20
+    worker-1:
+      ansbile_host: 192.168.22.34
+      ip: 192.168.22.34
   vars:
     ansible_user: ubuntu
     ansible_ssh_private_key_file: "~/.ssh/settings"
@@ -23,8 +17,6 @@ all:
     kube_control_plane:
       hosts:
         master-0:
-        master-1:
-        master-2:
     kube_node:
       hosts:
         worker-0:
@@ -32,8 +24,8 @@ all:
     etcd:
       hosts:
         master-0:
-        master-1:
-        master-2:
+        worker-0:
+        worker-1:
     k8s_cluster:
       children:
         kube_control_plane:

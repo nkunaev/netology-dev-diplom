@@ -4,8 +4,8 @@
 variable "k8s_master_amount" {
   type = map(string)
   default = {
-    stage = 3
-    prod  = 3
+    stage = 2
+    prod  = 1
   }
 }
 
@@ -21,6 +21,11 @@ module "k8s-master" {
   service_account_id = data.yandex_iam_service_account.sa-terraform.id
   image              = "ubuntu-2204-lts"
   network_id         = yandex_vpc_network.my-network.id
+
+  cpu = 2
+  ram = 6
+  core_fraction = 20
+
   subnets = [
     data.yandex_vpc_subnet.zone-a.id,
     data.yandex_vpc_subnet.zone-b.id,
@@ -65,7 +70,7 @@ output "k8s_master_internal_ip" {
 variable "k8s_worker_amount" {
   type = map(number)
   default = {
-    stage = 1
+    stage = 2
     prod  = 2
   }
 }
@@ -82,6 +87,11 @@ module "k8s-worker" {
   service_account_id = data.yandex_iam_service_account.sa-terraform.id
   image              = "ubuntu-2204-lts"
   network_id         = yandex_vpc_network.my-network.id
+
+  cpu = 2
+  ram = 6
+  core_fraction = 20
+
   subnets = [
     data.yandex_vpc_subnet.zone-a.id,
     data.yandex_vpc_subnet.zone-b.id,
@@ -90,7 +100,7 @@ module "k8s-worker" {
   username   = var.vm_username
   pub_key    = var.ssh_path
   scale_size = local.workers_scale_size
-  nat        = false
+  nat        = true
 
   depends_on = [
     data.yandex_vpc_subnet.zone-a,

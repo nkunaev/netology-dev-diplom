@@ -7,12 +7,3 @@ resource "local_file" "k8s_cluster_inventory" {
   )
   filename = "../ansible/k8s_cluster_hosts.yml"
 }
-
-resource "local_file" "single_nodes_inventory" {
-  content = templatefile("./jinja2_templates/single_nodes_inventory.tmpl",
-    {
-      gitlab_data = data.yandex_compute_instance.gitlab.network_interface[0]
-    }
-  )
-  filename = "../ansible/single_nodes_hosts.yml"
-}
