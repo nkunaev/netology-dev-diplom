@@ -1,4 +1,4 @@
-resource "yandex_lb_target_group" "woker_nodes" {
+/* resource "yandex_lb_target_group" "woker_nodes" {
   name      = "k8s-control-plane"
   region_id = "ru-central1"
 
@@ -23,7 +23,8 @@ resource "yandex_lb_network_load_balancer" "k8s-lb" {
 
   listener {
     name = "listener"
-    port = 80
+    port = 3000
+    target_port = 32000
     external_address_spec {
       ip_version = "ipv4"
     }
@@ -35,7 +36,7 @@ resource "yandex_lb_network_load_balancer" "k8s-lb" {
     healthcheck {
       name = "http"
       http_options {
-        port = 80
+        port = 32000
         path = "/"
       }
     }
@@ -49,4 +50,4 @@ data "yandex_lb_network_load_balancer" "k8s-lb" {
 
 output "lb_external_ip" {
   value = data.yandex_lb_network_load_balancer.k8s-lb.listener
-}
+} */

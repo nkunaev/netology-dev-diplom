@@ -5,5 +5,5 @@ resource "local_file" "k8s_cluster_inventory" {
       k8s_worker = data.yandex_compute_instance_group.k8s-worker.instances[*].network_interface[0]
     }
   )
-  filename = "../ansible/k8s_cluster_hosts.yml"
+  filename = "../ansible/inventory/hosts.yml"
 }

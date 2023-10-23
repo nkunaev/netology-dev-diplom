@@ -1,0 +1,12 @@
+---
+- name: Bootstrap machines
+  vars:
+    need_bootstrap: true
+  ansible.builtin.import_playbook: 1_bootstrap.yaml
+  when: need_bootstrap
+
+- name: Install kubeadm
+  vars:
+    need_kubeadm: true
+  ansible.builtin.import_playbook: 2_configure_cluster.yaml
+  when: need_kubeadm

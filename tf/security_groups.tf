@@ -35,6 +35,18 @@ variable "security_group_ingress" {
       protocol       = "TCP"
       description    = "разрешить доступ к мастер ноде"
       v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 3000
+    },
+    {
+      protocol       = "TCP"
+      description    = "разрешить доступ к мастер ноде"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 32000
+    },
+    {
+      protocol       = "TCP"
+      description    = "разрешить доступ к мастер ноде"
+      v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 6443
     },
     {
