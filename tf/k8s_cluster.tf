@@ -25,6 +25,7 @@ module "k8s-master" {
   cpu = 2
   ram = 6
   core_fraction = 20
+  disk_size = 30
 
   subnets = [
     data.yandex_vpc_subnet.zone-a.id,
@@ -91,6 +92,7 @@ module "k8s-worker" {
   cpu = 2
   ram = 6
   core_fraction = 20
+  disk_size = 30
 
   subnets = [
     data.yandex_vpc_subnet.zone-a.id,

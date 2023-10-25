@@ -1,0 +1,29 @@
+---
+- name: Install monitoring
+  hosts: masters
+  become: true
+  tasks:
+    - name: Install monitoring | Clone repo
+      ansible.builtin.git:
+        repo: https://github.com/prometheus-operator/kube-prometheus.git
+        dest: /tmp
+        single_branch: true
+        version: main
+
+    - name: Install monitoring | Preinstall env
+      ansible.builtin.command: kubectl apply --server-side -f /tmp/kube-prometheus/manifests/setup
+      changed_when: false
+
+    - name: Install monitoring | Wait still env will be ready
+      ansible.builtin.command: kubectl wait --for condition=Established --all CustomResourceDefinition --namespace=monitoring
+      changed_when: false
+
+    - name: Install monitoring | Preinstall env
+      ansible.builtin.copy:
+        src: files/grafana_web.yaml
+        dest: /tmp
+        mode: 0644
+
+    - name: Install monitoring | Preinstall env
+      ansible.builtin.command: kubectl apply -f /tmp/grafana_web.yaml && rm -rf /tmp/kube-prometheus
+      changed_when: false

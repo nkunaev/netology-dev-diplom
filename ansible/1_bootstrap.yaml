@@ -32,25 +32,25 @@
           - git
           - apt-transport-https
 
-    - name: Add Docker GPG apt Key
+    - name: Add Docker GPG Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
     - name: Add Docker Repository
       apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu/dists jammy stable
+        repo: deb https://download.docker.com/linux/ubuntu jammy stable
         state: present
 
-    - name: Download k8s GPG key
-      shell: >
-        curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
-      changed_when: false
+    - name: Add k8s GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
 
     - name: Add k8s repo
-      shell: >
-        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main' | tee /etc/apt/sources.list.d/kubernetes.list
-      changed_when: false
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
 
     - name: Install containerd
       ansible.builtin.apt:
@@ -60,7 +60,7 @@
 
     - name: Copy config containerd
       ansible.builtin.copy:
-        src: file/config.toml
+        src: files/config.toml
         dest: /etc/containerd/
         remote_src: false
         mode: 0644
@@ -70,6 +70,43 @@
 
     - name: Restart containerd
       ansible.builtin.meta: flush_handlers
+
+    - name: Load overlay and br_netfilter modules
+      ansible.builtin.shell:
+        cmd: |
+          sudo tee /etc/modules-load.d/containerd.conf <<EOF
+          overlay
+          br_netfilter
+          EOF
+      changed_when: false
+
+    - name: Load overlay and br_netfilter modules
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
+
+    - name: Apply sysctl settings
+      ansible.posix.sysctl:
+        name: "{{ item }}"
+        value: 1
+      loop:
+        - net.bridge.bridge-nf-call-iptables
+        - net.ipv4.ip_forward
+
+    - name: Update hosts file
+      ansible.builtin.blockinfile:
+        dest: "{{ item }}"
+        block: |
+          {% for item in groups['all'] %}
+          {{ hostvars[item]['ansible_host'] }} {{ item }}
+          {% endfor %}
+        state: present
+      loop:
+        - /etc/hosts
+        - /etc/cloud/templates/hosts.debian.tmpl
 
     - name: Install k8s
       ansible.builtin.apt:
@@ -89,18 +126,10 @@
         - kubeadm
         - kubectl
 
-    - name: Load overlay and br_netfilter modules
-      ansible.builtin.shell: |
-        "modprobe {{ item }}"
-      loop:
-        - "overlay"
-        - "br_netfilter"
-      changed_when: false
-
-    - name: Apply sysctl settings
-      ansible.posix.sysctl:
-        name: "{{ item }}"
-        value: 1
-      loop:
-        - "net.bridge.bridge-nf-call-iptables"
-        - "net.ipv4.ip_forward"
+    - name: Reboot machine
+      become: true
+      ansible.builtin.reboot:
+        post_reboot_delay: 20
+        reboot_timeout: 120
+        connect_timeout: 180
+        test_command: uptime

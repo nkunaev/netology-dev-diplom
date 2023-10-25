@@ -10,3 +10,9 @@
     need_kubeadm: true
   ansible.builtin.import_playbook: 2_configure_cluster.yaml
   when: need_kubeadm
+
+- name: Install kubeadm
+  vars:
+    need_monitoring: true
+  ansible.builtin.import_playbook: 3_install_monitoring.yaml
+  when: need_monitoring

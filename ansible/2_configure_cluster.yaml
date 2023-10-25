@@ -6,7 +6,7 @@
     - name: Masters settings
       block:
         - name: Init master
-          shell: kubeadm init --pod-network-cidr=10.244.0.0/16
+          shell: kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-cert-extra-sans "{{ hostvars[groups.masters.0].ansible_host }}"
           ignore_errors: true
 
         - name: Set KUBECONFIG env
@@ -17,9 +17,17 @@
         - name: Get join command
           shell: kubeadm token create --print-join-command
           register: join_command_raw
-            
+          changed_when: false
+
         - name: Install CNI
           shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+          changed_when: false
+
+        - name: Get join command
+          shell: kubectl config view --flatten=true
+          register: kubeconf
+          changed_when: false
+
       when: "'masters' in group_names"
 
     - name: Workers Settings
@@ -27,4 +35,36 @@
         - name: Init workers
           shell: "{{ hostvars[groups['masters'].0].join_command_raw.stdout }}"
           ignore_errors: true
+          changed_when: false
       when: "'workers' in group_names"
+
+- name: Install Helm
+  hosts: masters
+  become: true
+  tasks:
+    - name: Download and install Helm
+      ansible.builtin.unarchive:
+        src: "https://get.helm.sh/helm-v3.13.1-linux-amd64.tar.gz"
+        dest: "/usr/local/bin"
+        mode: 0755
+        remote_src: true
+        extra_opts:
+          - "--strip-components=1"
+        exclude:
+          - "CHANGELOG.md"
+          - "README.md"
+          - "LICENSE"
+
+- name: Copy kube config from remote to local
+  hosts: localhost
+  tasks:
+    - name: Insert kubeconfig to local conf file
+      ansible.builtin.copy:
+        content: "{{ hostvars[groups.masters.0].kubeconf.stdout }}"
+        dest: ~/.kube/config
+
+    - name: Change control plane ip addr
+      ansible.builtin.lineinfile:
+        path: ~/.kube/config
+        search_string: "server: https://"
+        line: "    server: https://{{ hostvars[groups.masters.0].ansible_host }}:6443"
