@@ -32,6 +32,6 @@ resource "yandex_compute_instance" "vm_template" {
 
   metadata = {
     ssh-keys = "${var.username}:${file("${var.pub_key}")}"
-    userdata = file("${path.module}/cloud_config.yaml")
+    user-data = file("${path.module}/cloud_config.yaml")
   }
 }

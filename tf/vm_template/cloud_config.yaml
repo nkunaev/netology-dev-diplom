@@ -1,0 +1,11 @@
+#cloud-config
+ssh_pwauth: no
+users:
+  - name: kunaev
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyu/6xCOkObqN/sE8jh9oZ7GNM+MWh5VWqyzKk6n2HHibUtIWdVCMhnrucU1jbCyNpz+PGHpYZVk7Qyfk21I2Gbbi31A5lYPPkpF+XC3U3EBjNz24CyAinvkmBVL1z+62REUiaLydrAvUAO7mjkgHHXHQBiFqqykxMefu3sfnunX4Ahe0/7OyXCsAtLzNy4jXxuHlUrtO/X2td9uIhoLv/rH0pillGCJjtDULMDGKFkY/J1V7OgjZwluGW9264kR4MaoerMkMEpC8z7+E6mIf21C2ZLUCkkKlla/AoW4kfJfGZsIhyUnd3XIlbfXWrWDxar65oYefeVpe7JFIsoXhjqjDuyqDa+NnFGvbptElFB94DVw64mQNYP4o3uP3L6Paa6fz8H5l3XY5kf8vm9koMoYkDAeq2A/6nGvrbUcam1U+qd9a031g5VbL5IjP/wkR9PrGdfc5a89ZJZBAN2ftdT2j3vPk1tB+c+n3GN5u2T+W1n770CvpiBdnujAOhji0= kunaev@dub-ws-235"
+runcmd:
+  - echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+  - swapoff -a
