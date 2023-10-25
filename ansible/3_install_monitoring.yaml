@@ -6,7 +6,7 @@
     - name: Install monitoring | Clone repo
       ansible.builtin.git:
         repo: https://github.com/prometheus-operator/kube-prometheus.git
-        dest: /tmp
+        dest: /tmp/kube-prometheus
         single_branch: true
         version: main
 
@@ -18,12 +18,24 @@
       ansible.builtin.command: kubectl wait --for condition=Established --all CustomResourceDefinition --namespace=monitoring
       changed_when: false
 
-    - name: Install monitoring | Preinstall env
+    - name: Install monitoring | Deploy helm
+      ansible.builtin.command: kubectl apply -f /tmp/kube-prometheus/manifests/
+      changed_when: false
+
+    - name: Install monitoring | Deploy helm
+      ansible.builtin.pause:
+        minutes: 1
+        prompt: "Wait till monitoring stack will be deployed"
+
+    - name: Install monitoring | Copy svc file
       ansible.builtin.copy:
         src: files/grafana_web.yaml
         dest: /tmp
         mode: 0644
 
-    - name: Install monitoring | Preinstall env
-      ansible.builtin.command: kubectl apply -f /tmp/grafana_web.yaml && rm -rf /tmp/kube-prometheus
+    - name: Install monitoring | deploy svc, remove trash, restart core-dns
+      ansible.builtin.command: |
+        kubectl apply -f /tmp/grafana_web.yaml
+        rm -rf /tmp/kube-prometheus
+        kubectl rollout restart -n kube-system deployment/coredns
       changed_when: false
