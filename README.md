@@ -75,6 +75,22 @@ kunaev@dub-ws-235:~/projects/netology-dev-diplom/tf$ terraform workspace list
 
 ![Alt text](image-4.png)
 
+* При создании инстансов учтено наличие различных окружений. Один из примеров:
+
+```HCL
+variable "k8s_master_amount" {
+  type = map(string)
+  default = {
+    stage = 2
+    prod  = 1
+  }
+}
+
+locals {
+  control_plane_scale_size = lookup(var.k8s_master_amount, terraform.workspace, null)
+}
+```
+
 б. Подготовить ansible конфигурации, можно воспользоваться, например Kubespray.
 
    Настроил установку кластера кубера через [ansible](ansible) с ипользованием [kubeadm](ansible/main_playbook.yaml).
