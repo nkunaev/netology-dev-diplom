@@ -206,7 +206,7 @@ https://kunaev.gitlab.yandexcloud.net
 
 ![Alt text](image-11.png)
 
-Сам pipeline [тут](wep-app/.gitlab-ci.yml) 
+Сам pipeline [тут](web-app/.gitlab-ci.yml) 
 
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
 
@@ -248,7 +248,8 @@ if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+(\.[0-9]+|)$/
 
 Плейбуки [тут](ansible) 
 
-4. Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.
+4. Репозиторий с [Dockerfile](web-app/Dockerfile) тестового приложения и ссылка на собранный docker image.
+
 
 kunaev.gitlab.yandexcloud.net:5050/diplom/web-app:0fb8d745
 
