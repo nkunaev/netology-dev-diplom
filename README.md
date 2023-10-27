@@ -248,12 +248,16 @@ kunaev.gitlab.yandexcloud.net:5050/diplom/web-app:0fb8d745
 ### Grafana 
 http://158.160.13.38:32000
 
+![Alt text](image-16.png)
+
 login: viewer
 pass: ASDfnksdf78123!
 
 ### web-app
 
 http://158.160.13.38:32100/
+
+![Alt text](image-17.png)
 
 
 7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
