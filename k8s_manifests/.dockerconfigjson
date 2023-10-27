@@ -1,0 +1,10 @@
+{
+    "auths": {
+        "kunaev.gitlab.yandexcloud.net:5050/diplom/web-app":{
+            "username":"",
+            "password":"",
+            "email":"deploy@email.com",
+            "auth":""
+    	}
+    }
+}

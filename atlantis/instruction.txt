@@ -1,0 +1,10 @@
+screen -S ngrok
+ngrok http 4141
+
+atlantis server \
+--atlantis-url="$URL" \
+--gitlab-user="$USERNAME" \
+--gitlab-token="$TOKEN" \
+--gitlab-webhook-secret="$SECRET" \
+--gitlab-hostname="$HOSTNAME" \
+--repo-allowlist="$REPO_ALLOWLIST" &
